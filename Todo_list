@@ -1,0 +1,95 @@
+import json
+
+
+def load_todo_list():
+    try:
+        with open("todo_list.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+
+
+def save_todo_list(todo_list):
+    with open("todo_list.json", "w") as file:
+        json.dump(todo_list, file, indent=1)
+
+
+def add_task(todo_list):
+    title = input("Enter the title of the task: ")
+    description = input("Enter the description of the task: ")
+    due_date = input("Enter the due date of the task: ")
+
+    task = {
+        "title": title,
+        "description": description,
+        "due_date": due_date,
+        "completed": False
+    }
+
+    todo_list.append(f'\n {task}')
+    print("Task added successfully.")
+
+
+
+def mark_complete(todo_list):
+    task_index = int(input("Enter the index of the task to mark as complete: "))
+    if task_index >= 0 and task_index < len(todo_list):
+        todo_list[task_index]["completed"] = True
+        print("Task marked as complete.")
+    else:
+        print("Invalid task index.")
+
+
+
+def remove_task(todo_list):
+    task_index = int(input("Enter the index of the task to remove: "))
+    if task_index >= 0 and task_index < len(todo_list):
+        removed_task = todo_list.pop(task_index)
+        print("Task removed:", removed_task["title"])
+    else:
+        print("Invalid task index.")
+
+
+
+def display_tasks(todo_list):
+    print("Todo List:")
+    for index, task in enumerate(todo_list):
+        status = "[X] " if task["completed"] else "[ ] "
+        print(f"{index}. {status}{task['title']} - {task['due_date']}")
+        print(f" Description: {task['description']}")
+
+
+
+def main():
+    todo_list = load_todo_list()
+
+    while True:
+        print("\n--- Todo List Manager ---")
+        print("1. Add Task")
+        print("2. Mark Task as Complete")
+        print("3. Remove Task")
+        print("4. Display Tasks")
+        print("5. Save and Quit")
+
+        choice = input("Enter your choice (1-5): ")
+
+        if choice == "1":
+            add_task(todo_list)
+        elif choice == "2":
+            mark_complete(todo_list)
+        elif choice == "3":
+            remove_task(todo_list)
+        elif choice == "4":
+            display_tasks(todo_list)
+        elif choice == "5":
+            save_todo_list(todo_list)
+            print("Todo list saved. Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+# Run the program
+if __name__ == "__main__":
+    main()
